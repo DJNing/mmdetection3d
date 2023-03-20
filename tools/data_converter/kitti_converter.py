@@ -158,7 +158,7 @@ def create_kitti_info_file(data_path,
                            pkl_prefix='kitti',
                            with_plane=False,
                            save_path=None,
-                           relative_path=True):
+                           relative_path=False):
     """Create info file of KITTI dataset.
 
     Given the raw data, generate its related info file in pkl format.
