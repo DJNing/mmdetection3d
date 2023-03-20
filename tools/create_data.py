@@ -4,18 +4,67 @@ from os import path as osp
 
 from tools.data_converter import indoor_converter as indoor
 from tools.data_converter import kitti_converter as kitti
+from tools.data_converter import vod_converter as vod
 from tools.data_converter import lyft_converter as lyft_converter
 from tools.data_converter import nuscenes_converter as nuscenes_converter
 from tools.data_converter.create_gt_database import (
     GTDatabaseCreater, create_groundtruth_database)
 
 
+def vod_data_prep(root_path,
+                    info_prefix,
+                    version,
+                    out_dir,
+                    with_plane=False,
+                    num_feature=4):
+    """Prepare data related to VOD dataset.
+
+    Related data consists of '.pkl' files recording basic infos,
+    2D annotations and groundtruth database.
+
+    Args:
+        root_path (str): Path of dataset root.
+        info_prefix (str): The prefix of info filenames.
+        version (str): Dataset version.
+        out_dir (str): Output directory of the groundtruth database info.
+        with_plane (bool, optional): Whether to use plane information.
+            Default: False.
+        num_feature (int, default=4): 4 for LiDAR [x,y,z,reflectance], 7 for radar [x, y, z, RCS, v_r, v_r_compensated, time]
+    """
+    # vod.create_kitti_info_file(root_path, info_prefix, with_plane, num_feature=num_feature)
+    # vod.create_reduced_point_cloud(root_path, info_prefix, num_features=num_feature)
+
+    # info_train_path = osp.join(root_path, f'{info_prefix}_infos_train.pkl')
+    # info_val_path = osp.join(root_path, f'{info_prefix}_infos_val.pkl')
+    # info_trainval_path = osp.join(root_path,
+    #                               f'{info_prefix}_infos_trainval.pkl')
+    # info_test_path = osp.join(root_path, f'{info_prefix}_infos_test.pkl')
+    
+    # print('exporting 2d annotation')
+    # vod.export_2d_annotation(root_path, info_train_path)
+    # vod.export_2d_annotation(root_path, info_val_path)
+    # vod.export_2d_annotation(root_path, info_trainval_path)
+    # vod.export_2d_annotation(root_path, info_test_path)
+    dataset_info = {
+        'load_dim': num_feature,
+        'use_dim': num_feature
+    }
+    print('creating groundtruth database')
+    create_groundtruth_database(
+        'VODDataset',
+        root_path,
+        info_prefix,
+        f'{out_dir}/{info_prefix}_infos_train.pkl',
+        relative_path=False,
+        mask_anno_path='instances_train.json',
+        with_mask=(version == 'mask'),vod_info=dataset_info)
+    
 def kitti_data_prep(root_path,
                     info_prefix,
                     version,
                     out_dir,
                     with_plane=False):
-    """Prepare data related to Kitti dataset.
+    """Prepare data related to KITTI dataset.
 
     Related data consists of '.pkl' files recording basic infos,
     2D annotations and groundtruth database.
@@ -235,6 +284,8 @@ parser.add_argument(
 parser.add_argument('--extra-tag', type=str, default='kitti')
 parser.add_argument(
     '--workers', type=int, default=4, help='number of threads to be used')
+parser.add_argument(
+    '--num_features', type=int, default=4, help='number of features used for point cloud, 4 for LiDAR [x,y,z,reflectance], 7 for radar [x, y, z, RCS, v_r, v_r_compensated, time]')
 args = parser.parse_args()
 
 if __name__ == '__main__':
@@ -245,6 +296,14 @@ if __name__ == '__main__':
             version=args.version,
             out_dir=args.out_dir,
             with_plane=args.with_plane)
+    elif args.dataset == 'vod':
+        vod_data_prep(
+            root_path=args.root_path,
+            info_prefix=args.extra_tag,
+            version=args.version,
+            out_dir=args.out_dir,
+            with_plane=args.with_plane,
+            num_feature=args.num_features)
     elif args.dataset == 'nuscenes' and args.version != 'v1.0-mini':
         train_version = f'{args.version}-trainval'
         nuscenes_data_prep(

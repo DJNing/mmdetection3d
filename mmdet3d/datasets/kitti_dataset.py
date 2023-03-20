@@ -93,8 +93,24 @@ class KittiDataset(Custom3DDataset):
         Returns:
             str: Name of the point cloud file.
         """
+        
         pts_filename = osp.join(self.root_split, self.pts_prefix,
                                 f'{idx:06d}.bin')
+        return pts_filename
+    
+    def _get_pts_filename_new(self, info):
+        """Get point cloud filename according to the given index.
+
+        Args:
+            info (dict): loaded info of the given index.
+
+        Returns:
+            str: Name of the point cloud file.
+        """
+        from pathlib import Path as P
+        filename = P(info['point_cloud']['velodyne_path']).name
+        pts_filename = osp.join(self.root_split, self.pts_prefix,
+                                filename)
         return pts_filename
 
     def get_data_info(self, index):
@@ -126,7 +142,7 @@ class KittiDataset(Custom3DDataset):
         P2 = info['calib']['P2'].astype(np.float32)
         lidar2img = P2 @ rect @ Trv2c
 
-        pts_filename = self._get_pts_filename(sample_idx)
+        pts_filename = self._get_pts_filename_new(info)
         input_dict = dict(
             sample_idx=sample_idx,
             pts_filename=pts_filename,

@@ -10,7 +10,9 @@ from PIL import Image
 from skimage import io
 
 
-def get_image_index_str(img_idx, use_prefix_id=False):
+def get_image_index_str(img_idx, use_prefix_id=False, is_vod=False):
+    if is_vod:
+        return '{:05d}'.format(img_idx)
     if use_prefix_id:
         return '{:07d}'.format(img_idx)
     else:
@@ -39,6 +41,27 @@ def get_kitti_info_path(idx,
     else:
         return str(prefix / file_path)
 
+def get_vod_info_path(idx,
+                        prefix,
+                        info_type='image_2',
+                        file_tail='.jpg',
+                        training=True,
+                        relative_path=True,
+                        exist_check=True,
+                        use_prefix_id=False):
+    img_idx_str = get_image_index_str(idx, use_prefix_id, is_vod=True)
+    img_idx_str += file_tail
+    prefix = Path(prefix)
+    if training:
+        file_path = Path('training') / info_type / img_idx_str
+    else:
+        file_path = Path('testing') / info_type / img_idx_str
+    if exist_check and not (prefix / file_path).exists():
+        raise ValueError('file not exist: {}'.format(file_path))
+    if relative_path:
+        return str(file_path)
+    else:
+        return str(prefix / file_path)
 
 def get_image_path(idx,
                    prefix,
@@ -46,9 +69,14 @@ def get_image_path(idx,
                    relative_path=True,
                    exist_check=True,
                    info_type='image_2',
-                   file_tail='.png',
-                   use_prefix_id=False):
-    return get_kitti_info_path(idx, prefix, info_type, file_tail, training,
+                   file_tail='.jpg',
+                   use_prefix_id=False,
+                   is_vod=False):
+    if is_vod:
+        return get_vod_info_path(idx, prefix, info_type, file_tail, training,
+                               relative_path, exist_check, use_prefix_id)
+    else:
+        return get_kitti_info_path(idx, prefix, info_type, file_tail, training,
                                relative_path, exist_check, use_prefix_id)
 
 
@@ -58,8 +86,13 @@ def get_label_path(idx,
                    relative_path=True,
                    exist_check=True,
                    info_type='label_2',
-                   use_prefix_id=False):
-    return get_kitti_info_path(idx, prefix, info_type, '.txt', training,
+                   use_prefix_id=False,
+                   is_vod=False):
+    if is_vod:
+        return get_vod_info_path(idx, prefix, info_type, '.txt', training,
+                               relative_path, exist_check, use_prefix_id)
+    else:
+        return get_kitti_info_path(idx, prefix, info_type, '.txt', training,
                                relative_path, exist_check, use_prefix_id)
 
 
@@ -69,8 +102,13 @@ def get_plane_path(idx,
                    relative_path=True,
                    exist_check=True,
                    info_type='planes',
-                   use_prefix_id=False):
-    return get_kitti_info_path(idx, prefix, info_type, '.txt', training,
+                   use_prefix_id=False,
+                   is_vod=False):
+    if is_vod:
+        return get_vod_info_path(idx, prefix, info_type, '.txt', training,
+                               relative_path, exist_check, use_prefix_id)
+    else:
+        return get_kitti_info_path(idx, prefix, info_type, '.txt', training,
                                relative_path, exist_check, use_prefix_id)
 
 
@@ -79,8 +117,13 @@ def get_velodyne_path(idx,
                       training=True,
                       relative_path=True,
                       exist_check=True,
-                      use_prefix_id=False):
-    return get_kitti_info_path(idx, prefix, 'velodyne', '.bin', training,
+                      use_prefix_id=False,
+                      is_vod=False):
+    if is_vod:
+        return get_vod_info_path(idx, prefix, 'velodyne', '.bin', training,
+                               relative_path, exist_check, use_prefix_id)
+    else:
+        return get_kitti_info_path(idx, prefix, 'velodyne', '.bin', training,
                                relative_path, exist_check, use_prefix_id)
 
 
@@ -89,8 +132,13 @@ def get_calib_path(idx,
                    training=True,
                    relative_path=True,
                    exist_check=True,
-                   use_prefix_id=False):
-    return get_kitti_info_path(idx, prefix, 'calib', '.txt', training,
+                   use_prefix_id=False,
+                   is_vod=False):
+    if is_vod:
+        return get_vod_info_path(idx, prefix, 'calib', '.txt', training,
+                               relative_path, exist_check, use_prefix_id)
+    else:
+        return get_kitti_info_path(idx, prefix, 'calib', '.txt', training,
                                relative_path, exist_check, use_prefix_id)
 
 
@@ -99,8 +147,13 @@ def get_pose_path(idx,
                   training=True,
                   relative_path=True,
                   exist_check=True,
-                  use_prefix_id=False):
-    return get_kitti_info_path(idx, prefix, 'pose', '.txt', training,
+                  use_prefix_id=False,
+                  is_vod=False):
+    if is_vod:
+        return get_vod_info_path(idx, prefix, 'pose', '.txt', training,
+                               relative_path, exist_check, use_prefix_id)
+    else:
+        return get_kitti_info_path(idx, prefix, 'pose', '.txt', training,
                                relative_path, exist_check, use_prefix_id)
 
 
@@ -109,8 +162,13 @@ def get_timestamp_path(idx,
                        training=True,
                        relative_path=True,
                        exist_check=True,
-                       use_prefix_id=False):
-    return get_kitti_info_path(idx, prefix, 'timestamp', '.txt', training,
+                       use_prefix_id=False,
+                       is_vod=False):
+    if is_vod:
+        return get_kitti_info_path(idx, prefix, 'timestamp', '.txt', training,
+                               relative_path, exist_check, use_prefix_id)
+    else:
+        return get_kitti_info_path(idx, prefix, 'timestamp', '.txt', training,
                                relative_path, exist_check, use_prefix_id)
 
 
@@ -279,6 +337,142 @@ def get_kitti_image_info(path,
 
         if with_plane:
             plane_path = get_plane_path(idx, path, training, relative_path)
+            if relative_path:
+                plane_path = str(root_path / plane_path)
+            lines = mmcv.list_from_file(plane_path)
+            info['plane'] = np.array([float(i) for i in lines[3].split()])
+
+        if annotations is not None:
+            info['annos'] = annotations
+            add_difficulty_to_annos(info)
+        return info
+
+    with futures.ThreadPoolExecutor(num_worker) as executor:
+        image_infos = executor.map(map_func, image_ids)
+
+    return list(image_infos)
+
+def get_vod_image_info(path,
+                         training=True,
+                         label_info=True,
+                         velodyne=False,
+                         calib=False,
+                         with_plane=False,
+                         image_ids=7481,
+                         extend_matrix=True,
+                         num_worker=8,
+                         relative_path=True,
+                         with_imageshape=True,
+                         num_feature=4):
+    """
+    KITTI annotation format version 2:
+    {
+        [optional]points: [N, 3+] point cloud
+        [optional, for kitti]image: {
+            image_idx: ...
+            image_path: ...
+            image_shape: ...
+        }
+        point_cloud: {
+            num_features: 4
+            velodyne_path: ...
+        }
+        [optional, for kitti]calib: {
+            R0_rect: ...
+            Tr_velo_to_cam: ...
+            P2: ...
+        }
+        annos: {
+            location: [num_gt, 3] array
+            dimensions: [num_gt, 3] array
+            rotation_y: [num_gt] angle array
+            name: [num_gt] ground truth name array
+            [optional]difficulty: kitti difficulty
+            [optional]group_ids: used for multi-part object
+        }
+    }
+    """
+    root_path = Path(path)
+    if not isinstance(image_ids, list):
+        image_ids = list(range(image_ids))
+
+    def map_func(idx):
+        info = {}
+        pc_info = {'num_features': num_feature}
+        calib_info = {}
+
+        image_info = {'image_idx': idx}
+        annotations = None
+        if velodyne:
+            pc_info['velodyne_path'] = get_velodyne_path(
+                idx, path, training, relative_path, is_vod=True)
+        image_info['image_path'] = get_image_path(idx, path, training,
+                                                  relative_path, is_vod=True)
+        if with_imageshape:
+            img_path = image_info['image_path']
+            if relative_path:
+                img_path = str(root_path / img_path)
+            image_info['image_shape'] = np.array(
+                io.imread(img_path).shape[:2], dtype=np.int32)
+        if label_info:
+            label_path = get_label_path(idx, path, training, relative_path, is_vod=True)
+            if relative_path:
+                label_path = str(root_path / label_path)
+            annotations = get_label_anno(label_path)
+        info['image'] = image_info
+        info['point_cloud'] = pc_info
+        if calib:
+            calib_path = get_calib_path(
+                idx, path, training, relative_path=False, is_vod=True)
+            with open(calib_path, 'r') as f:
+                lines = f.readlines()
+            P0 = np.array([float(info) for info in lines[0].split(' ')[1:13]
+                           ]).reshape([3, 4])
+            P1 = np.array([float(info) for info in lines[1].split(' ')[1:13]
+                           ]).reshape([3, 4])
+            P2 = np.array([float(info) for info in lines[2].split(' ')[1:13]
+                           ]).reshape([3, 4])
+            P3 = np.array([float(info) for info in lines[3].split(' ')[1:13]
+                           ]).reshape([3, 4])
+            if extend_matrix:
+                P0 = _extend_matrix(P0)
+                P1 = _extend_matrix(P1)
+                P2 = _extend_matrix(P2)
+                P3 = _extend_matrix(P3)
+            R0_rect = np.array([
+                float(info) for info in lines[4].split(' ')[1:10]
+            ]).reshape([3, 3])
+            if extend_matrix:
+                rect_4x4 = np.zeros([4, 4], dtype=R0_rect.dtype)
+                rect_4x4[3, 3] = 1.
+                rect_4x4[:3, :3] = R0_rect
+            else:
+                rect_4x4 = R0_rect
+
+            Tr_velo_to_cam = np.array([
+                float(info) for info in lines[5].split(' ')[1:13]
+            ]).reshape([3, 4])
+            # no imu in VOD, generate indenty matrix
+            # Tr_imu_to_velo = np.array([
+            #     float(info) for info in lines[6].split(' ')[1:13]
+            # ]).reshape([3, 4])
+            Tr_imu_to_velo = np.zeros([3, 4])
+            Tr_imu_to_velo[:3, :3] = np.eye(3)
+            
+            if extend_matrix:
+                Tr_velo_to_cam = _extend_matrix(Tr_velo_to_cam)
+                Tr_imu_to_velo = _extend_matrix(Tr_imu_to_velo)
+            calib_info['P0'] = P0
+            calib_info['P1'] = P1
+            calib_info['P2'] = P2
+            calib_info['P3'] = P3
+            calib_info['R0_rect'] = rect_4x4
+            calib_info['Tr_velo_to_cam'] = Tr_velo_to_cam
+            calib_info['Tr_imu_to_velo'] = Tr_imu_to_velo
+            info['calib'] = calib_info
+
+        if with_plane:
+            plane_path = get_plane_path(idx, path, training, relative_path, is_vod=True)
             if relative_path:
                 plane_path = str(root_path / plane_path)
             lines = mmcv.list_from_file(plane_path)
