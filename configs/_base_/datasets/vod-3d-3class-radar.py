@@ -1,5 +1,5 @@
 # dataset settings
-dataset_type = 'KittiDataset'
+dataset_type = 'VodDataset'
 data_root = 'data/vod/radar/'
 class_names = ['Pedestrian', 'Cyclist', 'Car']
 point_cloud_range = [0, -25.6, -3, 51.2, 25.6, 2]
@@ -110,8 +110,8 @@ eval_pipeline = [
 ]
 
 data = dict(
-    samples_per_gpu=6,
-    workers_per_gpu=4,
+    samples_per_gpu=16,
+    workers_per_gpu=8,
     train=dict(
         type='RepeatDataset',
         times=2,
