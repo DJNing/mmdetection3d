@@ -31,25 +31,35 @@ def vod_data_prep(root_path,
             Default: False.
         num_feature (int, default=4): 4 for LiDAR [x,y,z,reflectance], 7 for radar [x, y, z, RCS, v_r, v_r_compensated, time]
     """
-    vod.create_kitti_info_file(root_path, info_prefix, with_plane, num_feature=num_feature)
-    vod.create_reduced_point_cloud(root_path, info_prefix, num_features=num_feature)
+    # vod.create_kitti_info_file(root_path, info_prefix, with_plane, num_feature=num_feature)
+    # vod.create_reduced_point_cloud(root_path, info_prefix, num_features=num_feature)
 
-    info_train_path = osp.join(root_path, f'{info_prefix}_infos_train.pkl')
-    info_val_path = osp.join(root_path, f'{info_prefix}_infos_val.pkl')
-    info_trainval_path = osp.join(root_path,
-                                  f'{info_prefix}_infos_trainval.pkl')
-    info_test_path = osp.join(root_path, f'{info_prefix}_infos_test.pkl')
+    # info_train_path = osp.join(root_path, f'{info_prefix}_infos_train.pkl')
+    # info_val_path = osp.join(root_path, f'{info_prefix}_infos_val.pkl')
+    # info_trainval_path = osp.join(root_path,
+    #                               f'{info_prefix}_infos_trainval.pkl')
+    # info_test_path = osp.join(root_path, f'{info_prefix}_infos_test.pkl')
     
-    print('exporting 2d annotation')
-    vod.export_2d_annotation(root_path, info_train_path)
-    vod.export_2d_annotation(root_path, info_val_path)
-    vod.export_2d_annotation(root_path, info_trainval_path)
-    vod.export_2d_annotation(root_path, info_test_path)
-    dataset_info = {
-        'load_dim': num_feature,
-        'use_dim': num_feature
-    }
-    print('creating groundtruth database')
+    # print('exporting 2d annotation')
+    # vod.export_2d_annotation(root_path, info_train_path)
+    # vod.export_2d_annotation(root_path, info_val_path)
+    # vod.export_2d_annotation(root_path, info_trainval_path)
+    # vod.export_2d_annotation(root_path, info_test_path)
+    # dataset_info = {
+    #     'load_dim': num_feature,
+    #     'use_dim': num_feature
+    # }
+    # print('creating groundtruth database')
+    # create_groundtruth_database(
+    #     'VODDataset',
+    #     root_path,
+    #     info_prefix,
+    #     f'{out_dir}/{info_prefix}_infos_train.pkl',
+    #     relative_path=False,
+    #     mask_anno_path='instances_train.json',
+    #     with_mask=(version == 'mask'),vod_info=dataset_info)
+    vod.create_vod_info_file(root_path, info_prefix)
+    vod.create_reduced_point_cloud(root_path, info_prefix)
     create_groundtruth_database(
         'VODDataset',
         root_path,
@@ -57,7 +67,7 @@ def vod_data_prep(root_path,
         f'{out_dir}/{info_prefix}_infos_train.pkl',
         relative_path=False,
         mask_anno_path='instances_train.json',
-        with_mask=(version == 'mask'),vod_info=dataset_info)
+        with_mask=(version == 'mask'))
     
 def kitti_data_prep(root_path,
                     info_prefix,

@@ -86,8 +86,10 @@ class VodDataset(KittiDataset):
     #     self.pcd_limit_range = pcd_limit_range
     #     self.pts_prefix = pts_prefix
     
-    def __init__(self, data_root, ann_file, split, pts_prefix='velodyne', pipeline=None, classes=None, modality=None, box_type_3d='LiDAR', filter_empty_gt=True, test_mode=False, pcd_limit_range=..., **kwargs):
+    def __init__(self, data_root, ann_file, split, pts_prefix='velodyne', pipeline=None, classes=None, modality=None, box_type_3d='LiDAR', filter_empty_gt=True, test_mode=False, pcd_limit_range=[0, -25.6, -3, 51.2, 25.6, 2], **kwargs):
         super().__init__(data_root, ann_file, split, pts_prefix, pipeline, classes, modality, box_type_3d, filter_empty_gt, test_mode, pcd_limit_range, **kwargs)
+        
+    
 
     def evaluate(self,
                  results,

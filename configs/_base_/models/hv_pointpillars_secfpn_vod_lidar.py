@@ -1,10 +1,10 @@
-voxel_size = [0.16, 0.16, 4]
+voxel_size = [0.16, 0.16, 5]
 
 model = dict(
     type='VoxelNet',
     voxel_layer=dict(
-        max_num_points=32,  # max_points_per_voxel
-        point_cloud_range=[0, -39.68, -3, 69.12, 39.68, 1],
+        max_num_points=30,  # max_points_per_voxel
+        point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2],
         voxel_size=voxel_size,
         max_voxels=(16000, 40000)  # (training, testing) max_voxels
     ),
@@ -14,7 +14,7 @@ model = dict(
         feat_channels=[64],
         with_distance=False,
         voxel_size=voxel_size,
-        point_cloud_range=[0, -39.68, -3, 69.12, 39.68, 1]),
+        point_cloud_range=[0, -25.6, -3, 51.2, 25.6, 2]),
     middle_encoder=dict(
         type='PointPillarsScatter', in_channels=64, output_shape=[496, 432]),
     backbone=dict(
@@ -36,14 +36,11 @@ model = dict(
         use_direction_classifier=True,
         assign_per_class=True,
         anchor_generator=dict(
-            type='AlignedAnchor3DRangeGenerator', #['Pedestrian', 'Cyclist', 'Car']
+            type='AlignedAnchor3DRangeGenerator', # ['Pedestrian', 'Cyclist', 'Car']
             ranges=[
-                [0, -39.68, -2, 69.12, 39.68, -2],
-                [0, -39.68, -2, 69.12, 39.68, -2],
-                [0, -39.68, -2, 69.12, 39.68, -2],
-                # [0, -39.68, -0.6, 69.12, 39.68, -0.6],
-                # [0, -39.68, -0.6, 69.12, 39.68, -0.6],
-                # [0, -39.68, -1.78, 69.12, 39.68, -1.78],
+                [0, -25.6, 0, 51.2, 25.6, 0],
+                [0, -25.6, 0, 51.2, 25.6, 0],
+                [0, -25.6, 0, 51.2, 25.6, 0],
             ],
             sizes=[[0.8, 0.6, 1.73], [1.76, 0.6, 1.73], [3.9, 1.6, 1.56]],
             rotations=[0, 1.57],

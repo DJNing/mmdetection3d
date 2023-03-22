@@ -5,6 +5,7 @@ from .custom_3d import Custom3DDataset
 from .custom_3d_seg import Custom3DSegDataset
 from .kitti_dataset import KittiDataset
 from .kitti_mono_dataset import KittiMonoDataset
+from .vod_mono_dataset import VodMonoDataset
 from .lyft_dataset import LyftDataset
 from .nuscenes_dataset import NuScenesDataset
 from .nuscenes_mono_dataset import NuScenesMonoDataset
@@ -44,5 +45,5 @@ __all__ = [
     'VoxelBasedPointSampler', 'get_loading_pipeline', 'RandomDropPointsColor',
     'RandomJitterPoints', 'ObjectNameFilter', 'AffineResize',
     'RandomShiftScale', 'LoadPointsFromDict', 'PIPELINES',
-    'RangeLimitedRandomCrop', 'RandomRotate', 'MultiViewWrapper', 'VodDataset'
+    'RangeLimitedRandomCrop', 'RandomRotate', 'MultiViewWrapper', 'VodDataset', 'VodMonoDataset'
 ]

@@ -1,18 +1,18 @@
 _base_ = [
-    '../_base_/datasets/kitti-3d-car.py', '../_base_/models/point_rcnn.py',
+    '../_base_/datasets/vod-3d-3class-lidar.py', '../_base_/models/point_rcnn.py',
     '../_base_/default_runtime.py', '../_base_/schedules/cyclic_40e.py'
 ]
 
 # dataset settings
-dataset_type = 'KittiDataset'
-data_root = 'data/kitti/'
+dataset_type = 'VodDataset'
+data_root = 'data/vod/lidar/'
 class_names = ['Car', 'Pedestrian', 'Cyclist']
-point_cloud_range = [0, -40, -3, 70.4, 40, 1]
+point_cloud_range = [0, -25.6, -3, 51.2, 25.6, 2]
 input_modality = dict(use_lidar=True, use_camera=False)
 
 db_sampler = dict(
     data_root=data_root,
-    info_path=data_root + 'kitti_dbinfos_train.pkl',
+    info_path=data_root + 'vod_dbinfos_train.pkl',
     rate=1.0,
     prepare=dict(
         filter_by_difficulty=[-1],

@@ -826,7 +826,7 @@ def do_eval_vod(gt_annos,
     mAP40_bbox = None
     mAP40_aos = None
     if 'bbox' in eval_types:
-        ret = eval_class(
+        ret = eval_class_vod(
             gt_annos,
             dt_annos,
             current_classes,

@@ -102,6 +102,16 @@ class Custom3DDataset(Dataset):
         if not self.test_mode:
             self._set_group_flag()
 
+    @staticmethod
+    def get_project_dir():
+        from pathlib import Path as P
+        fpath = P(__file__)
+        s_fpath = str(fpath).split('/')
+        idx = s_fpath.index('mmdetection3d')
+        project_fpath_list = '/'.join(s_fpath[:idx+1])
+        project_path = P(project_fpath_list)
+        return project_path
+
     def load_annotations(self, ann_file):
         """Load annotations from ann_file.
 

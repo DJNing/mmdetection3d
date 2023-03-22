@@ -1,2 +1,2 @@
 # python tools/create_data.py waymo --root-path ./data/waymo/ --out-dir ./data/waymo/ --workers 32 --extra-tag waymo
-python tools/create_data.py kitti --root-path ./data/kitti --out-dir ./data/kitti --extra-tag kitti
+cd .. & python tools/create_data.py vod --root-path ./data/vod/radar --out-dir ./data/vod/radar --extra-tag vod --num_features 4

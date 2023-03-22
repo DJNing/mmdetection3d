@@ -1,15 +1,16 @@
 _base_ = [
-    '../_base_/models/hv_pointpillars_secfpn_vod_radar.py',
-    '../_base_/datasets/vod-3d-3class-radar.py',
+    '../_base_/models/hv_pointpillars_secfpn_vod_lidar.py',
+    '../_base_/datasets/vod-3d-3class-lidar.py',
     '../_base_/schedules/cyclic_40e.py', '../_base_/default_runtime.py'
 ]
 
 # point_cloud_range = [0, -39.68, -3, 69.12, 39.68, 1]
 # dataset settings
 dataset_type = 'VodDataset'
-data_root = 'data/vod/radar/'
+data_root = 'data/vod/lidar/'
 class_names = ['Pedestrian', 'Cyclist', 'Car']
 point_cloud_range = [0, -25.6, -3, 51.2, 25.6, 2]
+# PointPillars adopted a different sampling strategies among classes
 
 file_client_args = dict(backend='disk')
 # Uncomment the following if use ceph or other file clients.
@@ -102,7 +103,7 @@ file_client_args = dict(backend='disk')
 
 # In practice PointPillars also uses a different schedule
 # optimizer
-lr = 0.01
+lr = 0.001
 optimizer = dict(lr=lr)
 # max_norm=35 is slightly better than 10 for PointPillars in the earlier
 # development of the codebase thus we keep the setting. But we does not
@@ -111,7 +112,7 @@ optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 # PointPillars usually need longer schedule than second, we simply double
 # the training schedule. Do remind that since we use RepeatDataset and
 # repeat factor is 2, so we actually train 160 epochs.
-runner = dict(max_epochs=40)
+runner = dict(max_epochs=80)
 
 # Use evaluation interval=2 reduce the number of evaluation timese
 evaluation = dict(interval=1)

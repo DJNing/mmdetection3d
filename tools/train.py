@@ -223,6 +223,7 @@ def main():
     model.init_weights()
 
     logger.info(f'Model:\n{model}')
+    cfg.data.train['work_dir'] = cfg['work_dir']
     datasets = [build_dataset(cfg.data.train)]
     if len(cfg.workflow) == 2:
         val_dataset = copy.deepcopy(cfg.data.val)

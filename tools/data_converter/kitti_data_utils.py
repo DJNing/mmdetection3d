@@ -69,11 +69,11 @@ def get_image_path(idx,
                    relative_path=True,
                    exist_check=True,
                    info_type='image_2',
-                   file_tail='.jpg',
+                   file_tail='.png',
                    use_prefix_id=False,
                    is_vod=False):
     if is_vod:
-        return get_vod_info_path(idx, prefix, info_type, file_tail, training,
+        return get_vod_info_path(idx, prefix, info_type, '.jpg', training,
                                relative_path, exist_check, use_prefix_id)
     else:
         return get_kitti_info_path(idx, prefix, info_type, file_tail, training,
