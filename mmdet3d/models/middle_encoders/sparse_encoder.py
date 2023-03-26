@@ -123,7 +123,7 @@ class SparseEncoder(nn.Module):
         x = self.conv_input(input_sp_tensor)
 
         encode_features = []
-        for encoder_layer in self.encoder_layers:
+        for i, encoder_layer in enumerate(self.encoder_layers):
             x = encoder_layer(x)
             encode_features.append(x)
 
@@ -176,7 +176,7 @@ class SparseEncoder(nn.Module):
                             stride=2,
                             padding=padding,
                             indice_key=f'spconv{i + 1}',
-                            conv_type='SparseConv3d'))
+                            conv_type='SparseConv3d')) # this may need to be modified to [2,2,1] when using radar
                 elif block_type == 'basicblock':
                     if j == len(blocks) - 1 and i != len(
                             self.encoder_channels) - 1:
@@ -186,7 +186,7 @@ class SparseEncoder(nn.Module):
                                 out_channels,
                                 3,
                                 norm_cfg=norm_cfg,
-                                stride=2,
+                                stride=2,   # this may need to be modified to [2,2,1] when using radar
                                 padding=padding,
                                 indice_key=f'spconv{i + 1}',
                                 conv_type='SparseConv3d'))

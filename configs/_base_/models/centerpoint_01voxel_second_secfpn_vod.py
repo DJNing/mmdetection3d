@@ -1,15 +1,17 @@
-voxel_size = [0.1, 0.1, 0.2]
+voxel_size = [0.05, 0.05, 0.2] # further check this with See beyond seeing config
+# point_cloud_range = [0, -25.6, -3, 51.2, 25.6, 2]
+grid_size = [1024, 1024, 25] # pc_range / voxel_size
+sparse_shape = [25, 1024, 1024]
+
 model = dict(
     type='CenterPoint',
     pts_voxel_layer=dict(
-        max_num_points=10, 
-        voxel_size=voxel_size, 
-        max_voxels=(90000, 120000)),
-    pts_voxel_encoder=dict(type='HardSimpleVFE', num_features=5),
+        max_num_points=10, voxel_size=voxel_size, max_voxels=16000),
+    pts_voxel_encoder=dict(type='HardSimpleVFE', num_features=4),
     pts_middle_encoder=dict(
         type='SparseEncoder',
-        in_channels=5,
-        sparse_shape=[41, 1024, 1024],
+        in_channels=4,
+        sparse_shape=sparse_shape,
         output_channels=128,
         order=('conv', 'norm', 'act'),
         encoder_channels=((16, 16, 32), (32, 32, 64), (64, 64, 128), (128,
@@ -18,7 +20,7 @@ model = dict(
         block_type='basicblock'),
     pts_backbone=dict(
         type='SECOND',
-        in_channels=256,
+        in_channels=128,
         out_channels=[128, 256],
         layer_nums=[5, 5],
         layer_strides=[1, 2],
@@ -36,19 +38,16 @@ model = dict(
         type='CenterHead',
         in_channels=sum([256, 256]),
         tasks=[
-            dict(num_class=1, class_names=['car']),
-            dict(num_class=2, class_names=['truck', 'construction_vehicle']),
-            dict(num_class=2, class_names=['bus', 'trailer']),
-            dict(num_class=1, class_names=['barrier']),
-            dict(num_class=2, class_names=['motorcycle', 'bicycle']),
-            dict(num_class=2, class_names=['pedestrian', 'traffic_cone']),
+            dict(num_class=1, class_names=['Car']),
+            dict(num_class=1, class_names=['Cyclist']),
+            dict(num_class=1, class_names=['Pedestrian']),
         ],
         common_heads=dict(
-            reg=(2, 2), height=(1, 2), dim=(3, 2), rot=(2, 2), vel=(2, 2)),
+            reg=(2, 2), height=(1, 3), dim=(3, 2), rot=(2, 2)), #name=(op_ch, layer)
         share_conv_channel=64,
         bbox_coder=dict(
             type='CenterPointBBoxCoder',
-            post_center_range=[-61.2, -61.2, -10.0, 61.2, 61.2, 10.0],
+            post_center_range=[0, -25.6, -3, 51.2, 25.6, 2],
             max_num=500,
             score_threshold=0.1,
             out_size_factor=8,
@@ -62,7 +61,7 @@ model = dict(
     # model training and testing settings
     train_cfg=dict(
         pts=dict(
-            grid_size=[1024, 1024, 40],
+            grid_size=grid_size,
             voxel_size=voxel_size,
             out_size_factor=8,
             dense_reg=1,
@@ -72,7 +71,7 @@ model = dict(
             code_weights=[1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.2, 0.2])),
     test_cfg=dict(
         pts=dict(
-            post_center_limit_range=[-61.2, -61.2, -10.0, 61.2, 61.2, 10.0],
+            post_center_limit_range=[0, -25.6, -3, 51.2, 25.6, 2],
             max_per_img=500,
             max_pool_nms=False,
             min_radius=[4, 12, 10, 1, 0.85, 0.175],

@@ -2,7 +2,9 @@ voxel_size = [0.2, 0.2, 8]
 model = dict(
     type='CenterPoint',
     pts_voxel_layer=dict(
-        max_num_points=20, voxel_size=voxel_size, max_voxels=(30000, 40000)),
+        max_num_points=20, 
+        voxel_size=voxel_size, 
+        max_voxels=(30000, 40000)),
     pts_voxel_encoder=dict(
         type='PillarFeatureNet',
         in_channels=5,

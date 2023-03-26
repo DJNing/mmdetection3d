@@ -41,6 +41,7 @@ class KittiMonoDataset(NuScenesMonoDataset):
                  with_velocity=False,
                  eval_version=None,
                  version=None,
+                 work_dir=None,
                  **kwargs):
         super().__init__(
             data_root=data_root,
@@ -206,7 +207,7 @@ class KittiMonoDataset(NuScenesMonoDataset):
                  logger=None,
                  pklfile_prefix=None,
                  submission_prefix=None,
-                 show=False,
+                 show=True,
                  out_dir=None,
                  pipeline=None):
         """Evaluation in KITTI protocol.

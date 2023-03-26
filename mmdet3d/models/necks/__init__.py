@@ -5,8 +5,10 @@ from .imvoxel_neck import IndoorImVoxelNeck, OutdoorImVoxelNeck
 from .pointnet2_fp_neck import PointNetFPNeck
 from .second_fpn import SECONDFPN
 from .view_transformer import LSSViewTransformer
+from mmdet.models.necks.ct_resnet_neck import CTResNetNeck
 
 __all__ = [
     'FPN', 'SECONDFPN', 'OutdoorImVoxelNeck', 'IndoorImVoxelNeck',
-    'PointNetFPNeck', 'DLANeck', 'LSSViewTransformer'
+    'PointNetFPNeck', 'DLANeck', 'LSSViewTransformer',
+    'CTResNetNeck'
 ]

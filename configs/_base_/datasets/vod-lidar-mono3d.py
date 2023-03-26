@@ -89,4 +89,4 @@ data = dict(
         modality=input_modality,
         test_mode=True,
         box_type_3d='Camera'))
-evaluation = dict(interval=2)
+evaluation = dict(interval=1)

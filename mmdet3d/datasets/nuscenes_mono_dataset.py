@@ -9,6 +9,7 @@ import numpy as np
 import pyquaternion
 import torch
 from nuscenes.utils.data_classes import Box as NuScenesBox
+from mmcv.utils import print_log
 
 from mmdet3d.core import bbox3d2result, box3d_multiclass_nms, xywhr2xyxyr
 from mmdet.datasets import CocoDataset
@@ -646,6 +647,16 @@ class NuScenesMonoDataset(CocoDataset):
             dict(type='Collect3D', keys=['img'])
         ]
         return Compose(pipeline)
+    
+    @staticmethod
+    def get_project_dir():
+        from pathlib import Path as P
+        fpath = P(__file__)
+        s_fpath = str(fpath).split('/')
+        idx = s_fpath.index('mmdetection3d')
+        project_fpath_list = '/'.join(s_fpath[:idx+1])
+        project_path = P(project_fpath_list)
+        return project_path
 
     def show(self, results, out_dir, show=False, pipeline=None):
         """Results visualization.
@@ -658,7 +669,10 @@ class NuScenesMonoDataset(CocoDataset):
             pipeline (list[dict], optional): raw data loading for showing.
                 Default: None.
         """
-        assert out_dir is not None, 'Expect out_dir, got none.'
+        # assert out_dir is not None, 'Expect out_dir, got none.'
+        if out_dir is None:
+            out_dir = str(self.get_project_dir() / 'work_dirs' / 'show')
+            print_log(f'out_dir is none for show, setting defalut to work_dir as: {out_dir}')
         pipeline = self._get_pipeline(pipeline)
         for i, result in enumerate(results):
             if 'img_bbox' in result.keys():
@@ -666,21 +680,36 @@ class NuScenesMonoDataset(CocoDataset):
             data_info = self.data_infos[i]
             img_path = data_info['file_name']
             file_name = osp.split(img_path)[-1].split('.')[0]
-            img, img_metas = self._extract_data(i, pipeline,
-                                                ['img', 'img_metas'])
+            img, img_metas, img_info = self._extract_data(i, pipeline,
+                                                ['img', 'img_metas', 'img_info'])
             # need to transpose channel to first dim
-            img = img.numpy().transpose(1, 2, 0)
+            try:
+                img = img.numpy().transpose(1, 2, 0)
+            except:
+                # img may be numpy array already
+                img = img
             gt_bboxes = self.get_ann_info(i)['gt_bboxes_3d']
             pred_bboxes = result['boxes_3d']
-            show_multi_modality_result(
-                img,
-                gt_bboxes,
-                pred_bboxes,
-                img_metas['cam2img'],
-                out_dir,
-                file_name,
-                box_mode='camera',
-                show=show)
+            try:
+                show_multi_modality_result(
+                    img,
+                    gt_bboxes,
+                    pred_bboxes,
+                    img_metas['cam2img'],
+                    out_dir,
+                    file_name,
+                    box_mode='camera',
+                    show=show)
+            except:
+                show_multi_modality_result(
+                    img,
+                    gt_bboxes,
+                    pred_bboxes,
+                    img_info['cam_intrinsic'],
+                    out_dir,
+                    file_name,
+                    box_mode='camera',
+                    show=show)
 
 
 def output_to_nusc_box(detection):

@@ -1,0 +1,1 @@
+../../plugin/rcfusion/configs/rc_fusion_base.py

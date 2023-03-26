@@ -234,7 +234,7 @@ class VodMonoDataset(NuScenesMonoDataset):
             dict[str, float]: Results of each evaluation metric.
         """
         result_files, tmp_dir = self.format_results(results, pklfile_prefix)
-        from mmdet3d.core.evaluation import kitti_eval
+        from mmdet3d.core.evaluation import kitti_eval, vod_eval
         gt_annos = [info['annos'] for info in self.anno_infos]
 
         if isinstance(result_files, dict):
@@ -243,7 +243,7 @@ class VodMonoDataset(NuScenesMonoDataset):
                 eval_types = ['bbox', 'bev', '3d']
                 if '2d' in name:
                     eval_types = ['bbox']
-                ap_result_str, ap_dict_ = kitti_eval(
+                ap_result_str, ap_dict_ = vod_eval(
                     gt_annos,
                     result_files_,
                     self.CLASSES,
@@ -256,10 +256,10 @@ class VodMonoDataset(NuScenesMonoDataset):
 
         else:
             if metric == 'img_bbox2d':
-                ap_result_str, ap_dict = kitti_eval(
+                ap_result_str, ap_dict = vod_eval(
                     gt_annos, result_files, self.CLASSES, eval_types=['bbox'])
             else:
-                ap_result_str, ap_dict = kitti_eval(gt_annos, result_files,
+                ap_result_str, ap_dict = vod_eval(gt_annos, result_files,
                                                     self.CLASSES)
             print_log('\n' + ap_result_str, logger=logger)
 
